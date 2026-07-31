@@ -18,7 +18,7 @@
 
 <header class="topbar">
 
-    <h1>Bracket Battle</h1>
+    <h1>Beefdle</h1>
 
     <button id="restartBtn" hidden>
         Restart
