@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bracket Battle</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="background"></div>
+
+<header class="topbar">
+
+    <h1>Bracket Battle</h1>
+
+    <button id="restartBtn" hidden>
+        Restart
+    </button>
+
+</header>
+
+<!-- HOME -->
+
+<section id="homeScreen" class="screen active">
+
+    <div class="hero">
+
+        <h2>Create Your Champion</h2>
+
+        <p>
+            Choose between two competitors until only one remains.
+        </p>
+
+        <div class="upload-area" id="dropZone">
+
+            <div class="upload-icon">
+                📁
+            </div>
+
+            <h3>Drop Images Here</h3>
+
+            <p>
+                or click to choose files
+            </p>
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                multiple
+                hidden
+            >
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <span id="imageCount">0</span>
+
+                <small>Images Loaded</small>
+
+            </div>
+
+        </div>
+
+        <button
+            id="startBtn"
+            class="primary"
+            disabled
+        >
+            Start Tournament
+        </button>
+
+    </div>
+
+</section>
+
+<!-- BATTLE -->
+
+<section id="battleScreen" class="screen">
+
+    <div class="progress">
+
+        <div class="progress-top">
+
+            <span id="roundLabel">
+                Round 1
+            </span>
+
+            <span id="matchLabel">
+                Match 1
+            </span>
+
+        </div>
+
+        <div class="progress-bar">
+
+            <div
+                id="progressFill"
+                class="fill">
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="battle-container">
+
+        <div
+            class="competitor"
+            id="leftCard">
+
+            <img
+                id="leftImage"
+                src=""
+                alt="">
+
+            <h2
+                id="leftName">
+            </h2>
+
+        </div>
+
+        <div class="vs">
+
+            VS
+
+        </div>
+
+        <div
+            class="competitor"
+            id="rightCard">
+
+            <img
+                id="rightImage"
+                src=""
+                alt="">
+
+            <h2
+                id="rightName">
+            </h2>
+
+        </div>
+
+    </div>
+
+    <div class="controls">
+
+        <p>
+
+            Click an image to vote
+
+        </p>
+
+    </div>
+
+</section>
+
+<!-- WINNER -->
+
+<section
+    id="winnerScreen"
+    class="screen">
+
+    <div class="winner-box">
+
+        <div class="trophy">
+
+            🏆
+
+        </div>
+
+        <h2>
+
+            Champion
+
+        </h2>
+
+        <img
+            id="winnerImage"
+            src=""
+            alt="">
+
+        <h1
+            id="winnerName">
+        </h1>
+
+        <div class="winnerButtons">
+
+            <button
+                id="viewBracketBtn">
+
+                View Bracket
+
+            </button>
+
+            <button
+                id="playAgainBtn"
+                class="primary">
+
+                Play Again
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- BRACKET -->
+
+<section
+    id="bracketScreen"
+    class="screen">
+
+    <div class="bracketHeader">
+
+        <h2>
+
+            Tournament Bracket
+
+        </h2>
+
+        <button
+            id="backBtn">
+
+            Back
+
+        </button>
+
+    </div>
+
+    <div
+        id="bracketContainer">
+
+    </div>
+
+</section>
+
+<!-- TEMPLATE -->
+
+<template id="matchTemplate">
+
+    <div class="match">
+
+        <div class="slot">
+
+            <img>
+
+            <span></span>
+
+        </div>
+
+        <div class="slot">
+
+            <img>
+
+            <span></span>
+
+        </div>
+
+    </div>
+
+</template>
+
+<canvas id="confettiCanvas"></canvas>
+
+<script src="confetti.js"></script>
+<script src="tournament.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
