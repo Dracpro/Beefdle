@@ -1,0 +1,211 @@
+// confetti.js
+// Simple winner celebration animation
+
+const canvas = document.getElementById(
+    "confettiCanvas"
+);
+
+const ctx = canvas.getContext("2d");
+
+
+let pieces = [];
+let animation;
+
+
+
+function resizeCanvas(){
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+resizeCanvas();
+
+
+
+// Create confetti
+
+function startConfetti(){
+
+
+    pieces = [];
+
+
+    for(let i = 0; i < 180; i++){
+
+
+        pieces.push({
+
+            x:
+            Math.random()
+            *
+            canvas.width,
+
+
+            y:
+            Math.random()
+            *
+            canvas.height
+            -
+            canvas.height,
+
+
+            size:
+            Math.random()*10+5,
+
+
+            speed:
+            Math.random()*5+2,
+
+
+            rotation:
+            Math.random()*360,
+
+
+            spin:
+            Math.random()*10-5
+
+        });
+
+
+    }
+
+
+    animateConfetti();
+
+
+
+    setTimeout(()=>{
+
+
+        cancelAnimationFrame(
+            animation
+        );
+
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+    },6000);
+
+}
+
+
+
+
+function animateConfetti(){
+
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    pieces.forEach(piece=>{
+
+
+        piece.y += piece.speed;
+
+        piece.rotation += piece.spin;
+
+
+
+        if(piece.y > canvas.height){
+
+            piece.y = -20;
+
+        }
+
+
+
+        ctx.save();
+
+
+        ctx.translate(
+            piece.x,
+            piece.y
+        );
+
+
+        ctx.rotate(
+            piece.rotation
+            *
+            Math.PI
+            /
+            180
+        );
+
+
+
+        ctx.fillStyle =
+            randomColor();
+
+
+
+        ctx.fillRect(
+            -piece.size/2,
+            -piece.size/2,
+            piece.size,
+            piece.size
+        );
+
+
+        ctx.restore();
+
+
+    });
+
+
+
+    animation =
+        requestAnimationFrame(
+            animateConfetti
+        );
+
+}
+
+
+
+
+
+function randomColor(){
+
+    const colors = [
+
+        "#7c3aed",
+        "#ec4899",
+        "#22c55e",
+        "#3b82f6",
+        "#facc15"
+
+    ];
+
+
+    return colors[
+        Math.floor(
+            Math.random()
+            *
+            colors.length
+        )
+    ];
+
+}

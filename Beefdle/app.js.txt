@@ -1,0 +1,384 @@
+
+// app.js
+// Connects the interface to the tournament engine
+
+
+let uploadedImages = [];
+
+
+// Elements
+
+const dropZone = document.getElementById("dropZone");
+const imageInput = document.getElementById("imageInput");
+
+const imageCount = document.getElementById("imageCount");
+
+const startBtn = document.getElementById("startBtn");
+
+const homeScreen = document.getElementById("homeScreen");
+const battleScreen = document.getElementById("battleScreen");
+const winnerScreen = document.getElementById("winnerScreen");
+const bracketScreen = document.getElementById("bracketScreen");
+
+
+const leftImage = document.getElementById("leftImage");
+const rightImage = document.getElementById("rightImage");
+
+const leftName = document.getElementById("leftName");
+const rightName = document.getElementById("rightName");
+
+
+const progressFill = document.getElementById("progressFill");
+
+const roundLabel = document.getElementById("roundLabel");
+const matchLabel = document.getElementById("matchLabel");
+
+
+const winnerImage = document.getElementById("winnerImage");
+const winnerName = document.getElementById("winnerName");
+
+
+const restartBtn = document.getElementById("restartBtn");
+
+const playAgainBtn = document.getElementById("playAgainBtn");
+
+
+// Upload images
+
+
+dropZone.addEventListener(
+    "click",
+    () => imageInput.click()
+);
+
+
+imageInput.addEventListener(
+    "change",
+    e => {
+
+        loadImages(
+            [...e.target.files]
+        );
+
+    }
+);
+
+
+// Drag and drop
+
+dropZone.addEventListener(
+    "dragover",
+    e => {
+
+        e.preventDefault();
+
+        dropZone.classList.add(
+            "dragging"
+        );
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "dragleave",
+    () => {
+
+        dropZone.classList.remove(
+            "dragging"
+        );
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "drop",
+    e => {
+
+        e.preventDefault();
+
+        dropZone.classList.remove(
+            "dragging"
+        );
+
+
+        loadImages(
+            [...e.dataTransfer.files]
+        );
+
+    }
+);
+
+
+
+// Load images
+
+function loadImages(files) {
+
+
+    uploadedImages = files
+        .filter(
+            file =>
+            file.type.startsWith("image/")
+        )
+        .map(
+            file => ({
+
+                name:file.name,
+
+                url:
+                URL.createObjectURL(file)
+
+            })
+        );
+
+
+    imageCount.textContent =
+        uploadedImages.length;
+
+
+    startBtn.disabled =
+        uploadedImages.length < 2;
+
+}
+
+
+
+// Start tournament
+
+
+startBtn.onclick = () => {
+
+
+    createTournament(
+        uploadedImages
+    );
+
+
+    showScreen(
+        battleScreen
+    );
+
+
+    restartBtn.hidden = false;
+
+
+    displayMatch();
+
+};
+
+
+
+
+// Display current battle
+
+function displayMatch(){
+
+
+    let match =
+        getCurrentMatch();
+
+
+
+    if(!match){
+        return;
+    }
+
+
+    leftImage.src =
+        match[0].image;
+
+
+    leftName.textContent =
+        match[0].name;
+
+
+
+    if(match[1]){
+
+
+        rightImage.src =
+            match[1].image;
+
+
+        rightName.textContent =
+            match[1].name;
+
+
+    }
+
+
+
+    updateProgress();
+
+}
+
+
+
+// Voting
+
+
+document
+.getElementById("leftCard")
+.onclick = () => {
+
+
+    choose(
+        getCurrentMatch()[0]
+    );
+
+};
+
+
+
+document
+.getElementById("rightCard")
+.onclick = () => {
+
+
+    let match =
+        getCurrentMatch();
+
+
+    if(match[1]){
+
+
+        choose(
+            match[1]
+        );
+
+    }
+
+};
+
+
+
+
+// Process vote
+
+function choose(player){
+
+
+    let result =
+        voteWinner(player);
+
+
+
+    if(result.finished){
+
+        showWinner(
+            result.winner
+        );
+
+    }
+
+    else{
+
+        displayMatch();
+
+    }
+
+}
+
+
+
+// Progress
+
+function updateProgress(){
+
+
+    let status =
+        getTournamentStatus();
+
+
+    roundLabel.textContent =
+        "Round " + status.round;
+
+
+    matchLabel.textContent =
+        "Match " +
+        status.match +
+        " / " +
+        status.total;
+
+
+
+    let percent =
+        (
+            status.match /
+            status.total
+        )
+        * 100;
+
+
+    progressFill.style.width =
+        percent + "%";
+
+
+}
+
+
+
+
+// Winner screen
+
+function showWinner(player){
+
+
+    showScreen(
+        winnerScreen
+    );
+
+
+    winnerImage.src =
+        player.image;
+
+
+    winnerName.textContent =
+        player.name;
+
+
+    if(window.startConfetti){
+
+        startConfetti();
+
+    }
+
+}
+
+
+
+
+// Screen switching
+
+function showScreen(screen){
+
+
+    document
+    .querySelectorAll(".screen")
+    .forEach(
+        s =>
+        s.classList.remove(
+            "active"
+        )
+    );
+
+
+    screen.classList.add(
+        "active"
+    );
+
+}
+
+
+
+// Restart
+
+restartBtn.onclick =
+playAgainBtn.onclick = () => {
+
+
+    location.reload();
+
+};

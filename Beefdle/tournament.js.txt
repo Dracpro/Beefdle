@@ -1,0 +1,176 @@
+// tournament.js
+// Handles bracket creation and tournament progression
+
+let competitors = [];
+let currentRound = [];
+let nextRound = [];
+
+let currentMatch = 0;
+let winners = [];
+
+let roundNumber = 1;
+
+
+// Create tournament from uploaded images
+function createTournament(images) {
+
+    competitors = images.map((img, index) => ({
+        id: index,
+        name: img.name.replace(/\.[^/.]+$/, ""),
+        image: img.url
+    }));
+
+    shuffle(competitors);
+
+    currentRound = makePairs(competitors);
+
+    currentMatch = 0;
+    winners = [];
+    roundNumber = 1;
+
+    return currentRound[0];
+
+}
+
+
+// Create pairs
+function makePairs(players) {
+
+    let matches = [];
+
+    for (let i = 0; i < players.length; i += 2) {
+
+        if (players[i + 1]) {
+
+            matches.push([
+                players[i],
+                players[i + 1]
+            ]);
+
+        } else {
+
+            // bye
+            matches.push([
+                players[i],
+                null
+            ]);
+
+        }
+
+    }
+
+    return matches;
+
+}
+
+
+// Get current matchup
+function getCurrentMatch() {
+
+    return currentRound[currentMatch];
+
+}
+
+
+// Record vote
+function voteWinner(player) {
+
+    winners.push(player);
+
+    currentMatch++;
+
+
+    // More matches left
+    if (currentMatch < currentRound.length) {
+
+        return {
+            finished:false,
+            match:getCurrentMatch()
+        };
+
+    }
+
+
+    // Round finished
+    if (winners.length === 1) {
+
+        return {
+            finished:true,
+            winner:winners[0]
+        };
+
+    }
+
+
+    // Start next round
+    currentRound = makePairs(winners);
+
+    winners = [];
+    currentMatch = 0;
+    roundNumber++;
+
+    return {
+        finished:false,
+        match:getCurrentMatch()
+    };
+
+}
+
+
+// Automatically handle byes
+function resolveBye(match) {
+
+    if (match[1] === null) {
+
+        return match[0];
+
+    }
+
+    return null;
+
+}
+
+
+// Shuffle array
+function shuffle(array) {
+
+    for (
+        let i = array.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j = Math.floor(
+            Math.random() * (i + 1)
+        );
+
+        [
+            array[i],
+            array[j]
+        ] =
+        [
+            array[j],
+            array[i]
+        ];
+
+    }
+
+}
+
+
+// Get tournament info
+function getTournamentStatus() {
+
+    return {
+
+        round: roundNumber,
+
+        match:
+        currentMatch + 1,
+
+        total:
+        currentRound.length
+
+    };
+
+}
